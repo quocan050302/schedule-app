@@ -27,11 +27,11 @@ interface Event {
   eventName: string;
   duration: number;
   locationType: string;
-  themeColor?: string; // optional property
+  themeColor?: string;
 }
 
 interface BusinessInfo {
-  businessName?: string; // optional property
+  businessName?: string;
 }
 
 const MeetingEventList: React.FC = () => {
@@ -57,7 +57,7 @@ const MeetingEventList: React.FC = () => {
     const querySnapshot = await getDocs(q);
     const events: Event[] = [];
     querySnapshot.forEach((doc) => {
-      const data = doc.data() as Event; // Cast to Event type
+      const data = doc.data() as Event;
       events.push(data);
     });
     setEventList(events);

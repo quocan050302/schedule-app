@@ -10,10 +10,10 @@ function DashboardLayout({
 }>) {
   return (
     <div>
-      <div className="hidden md:block md:w-64 bg-slate-50 h-screen fixed">
+      <div className="hidden md:block md:w-96 bg-slate-50 h-screen fixed">
         <SideNavBar />
       </div>
-      <div className="md:ml-64">
+      <div className="md:ml-96">
         <DashboardHeader />
         <Toaster />
         {children}

@@ -56,7 +56,10 @@ const PreviewMeeting: React.FC<PreviewMeetingProps> = ({ formValue }) => {
       className="p-5 py-10 shadow-lg m-5 border-t-8"
       style={{ borderTopColor: formValue?.themeColor || "#000" }}
     >
-      <Image src="/logo.svg" alt="logo" width={150} height={150} />
+      {/* <Image src="/logo.svg" alt="logo" width={150} height={150} /> */}
+      <div className="text-3xl no-underline text-blue-700 font-sans font-bold max-[430px]:text-[20px]">
+        Byte<span className="text-green-800">Webster</span>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 mt-5">
         <div className="p-4 border-r">
           <h2>Business Name</h2>

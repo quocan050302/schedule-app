@@ -64,6 +64,7 @@ function Availability() {
     const docRef = doc(db, "Business", user?.email as string);
     const docSnap = await getDoc(docRef);
     const result = docSnap.data();
+    console.log(result);
     if (result) {
       setDaysAvailable(result?.daysAvailable || initialDaysAvailable);
       setStartTime(result?.startTime);
@@ -103,8 +104,6 @@ function Availability() {
       toast.error("Start time must be before end time.");
       return;
     }
-
-    console.log(daysAvailable, startTime, endTime);
 
     const docRef = doc(db, "Business", user?.email as string);
     try {

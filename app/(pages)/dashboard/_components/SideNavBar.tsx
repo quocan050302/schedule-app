@@ -1,10 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Calendar, Clock, Plus, Settings } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Briefcase, Clock, Plus, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import MeetingItem from "./MeetingItem";
+import { format } from "date-fns";
 
 function SideNavBar() {
   const menu = [
@@ -34,20 +37,42 @@ function SideNavBar() {
     },
   ];
 
+  const isDateDisabled = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
+  const [date, setDate] = useState<Date | undefined>(() => {
+    const storedDate = localStorage.getItem("selectedDate");
+    return storedDate ? new Date(storedDate) : new Date(); // Default to current date if not set
+  });
+
   const path = usePathname();
   const [activePath, setActivePath] = useState(path);
+
+  const formattedDate = date
+    ? format(date, "eeee, d MMMM")
+    : "No Date Selected";
 
   useEffect(() => {
     path && setActivePath(path);
   }, [path]);
+
+  // Save the selected date to localStorage whenever it changes
+  useEffect(() => {
+    if (date) {
+      localStorage.setItem("selectedDate", date.toISOString());
+    }
+  }, [date]);
+
   return (
     <div className="p-5 py-14">
-      <div className="flex justify-center">
-        {/* <Image src="/logo.svg" width={150} height={150} alt="logo" /> */}
+      <div className="flex">
         <div>
           <Link
             href="/dashboard"
-            className="text-3xl no-underline text-blue-700 font-sans font-bold max-[430px]:text-[20px]"
+            className="text-4xl no-underline text-blue-700 font-sans font-bold max-[430px]:text-[20px]"
           >
             Byte<span className="text-green-800">Webster</span>
           </Link>
@@ -55,34 +80,39 @@ function SideNavBar() {
       </div>
 
       <Link href={"/create-meeting"}>
-        <Button
-          //   variant="destructive"
-          className="flex gap-2 w-full 
-                mt-7
-                rounded-full"
-        >
-          {" "}
-          <Plus /> Create
+        <Button className="flex gap-2 w-full mt-4 rounded-full">
+          <Plus /> Create New Event
         </Button>
       </Link>
+      <div className="mt-4 shadow-lg">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-md border"
+          disabled={isDateDisabled}
+        />
+      </div>
 
-      <div className="mt-5 flex flex-col gap-5">
-        {menu.map((item, index) => (
-          <Link href={item.path} key={index}>
-            <Button
-              variant="ghost"
-              className={`w-full flex gap-2 
-                        justify-start
-                        hover:bg-blue-100
-                        font-normal
-                        text-lg
-                        ${activePath == item.path && "text-primary bg-blue-100"}
-                        `}
-            >
-              <item.icon /> {item.name}
-            </Button>
+      <div className="mt-6">
+        <div className="flex items-center justify-between">
+          <div className="block text-2xl font-bold text-darkBlue">
+            Upcoming Event
+          </div>
+          <Link
+            href="/dashboard/scheduled-meeting"
+            className="py-1 px-2 block cursor-pointer rounded-sm text-sm bg-darkBlue text-white transition-all duration-300 hover:bg-darkBlue/80"
+          >
+            View All
           </Link>
-        ))}
+        </div>
+        <div className="text-base text-primary/90 font-medium mt-2">
+          {formattedDate}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <MeetingItem selectedDate={date}></MeetingItem>
       </div>
     </div>
   );

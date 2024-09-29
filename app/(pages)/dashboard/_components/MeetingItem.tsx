@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { addMinutes, format, isSameDay, parse } from "date-fns";
 import MeetingSkel from "@/app/_skeletons/MeetingSkel";
+import Link from "next/link";
 
 interface Meeting {
   formatedDate: string;
@@ -19,6 +20,7 @@ interface Meeting {
   selectedTime: string;
   locationUrl?: string;
   eventName?: string;
+  color?: string;
   formatedTimeStamp?: string;
 }
 
@@ -64,10 +66,13 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
     ? selectedDate.getTime() / 1000
     : null;
 
-  const checkIsSameDay = (selectedDate: string, formatedDate: string) => {
+  const checkIsSameDay = (
+    selectedDate: Date | undefined,
+    formatedDate: string
+  ) => {
     const parsedFormatedDate = parse(formatedDate, "MMMM do, yyyy", new Date());
 
-    const result = isSameDay(selectedDate, parsedFormatedDate);
+    const result = isSameDay(selectedDate as Date, parsedFormatedDate);
     return result;
   };
 
@@ -75,12 +80,11 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
     const now = format(new Date(), "t");
     if (type === "upcoming") {
       return meetingList.filter((item) => {
-        console.log(item?.formatedDate);
         return (
           item.formatedTimeStamp &&
-          convertSelectedDateIntoSecond &&
+          //   convertSelectedDateIntoSecond &&
           item.formatedTimeStamp >= now &&
-          checkIsSameDay(selectedDate as any, item?.formatedDate)
+          checkIsSameDay(selectedDate as Date | undefined, item?.formatedDate)
         );
       });
     } else {
@@ -130,9 +134,17 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
                 index < 3 && (
                   <li
                     key={index}
-                    className="py-4 px-6 bg-white rounded-sm relative overflow-hidden mb-4"
+                    style={{
+                      backgroundColor: `${meeting?.color}33`,
+                    }}
+                    className={`py-4 px-6 bg-[${meeting?.color}]/90 rounded-sm relative overflow-hidden mb-4`}
                   >
-                    <div className="absolute left-0 top-0 h-full w-[6px] bg-primary"></div>
+                    <div
+                      style={{
+                        background: meeting?.color,
+                      }}
+                      className={`absolute left-0 top-0 h-full w-[6px]`}
+                    ></div>
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col w-[70%] gap-2">
                         <span className="text-lg text-darkBlue font-medium leading-[1.3]">
@@ -145,9 +157,12 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
                           )}
                         </span>
                       </div>
-                      <div className="p-2 rounded-full cursor-pointer text-white bg-primary hover:opacity-80">
+                      <Link
+                        href={meeting?.locationUrl as string}
+                        className="p-2 rounded-full cursor-pointer text-white bg-primary hover:opacity-80"
+                      >
                         <Presentation />
-                      </div>
+                      </Link>
                     </div>
                   </li>
                 )

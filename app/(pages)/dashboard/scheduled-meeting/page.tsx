@@ -64,23 +64,26 @@ function ScheduledMeeting() {
   };
 
   return (
-    <div className="p-10">
-      <h2 className="font-bold text-2xl">Scheduled Meetings</h2>
-      <hr className="my-5" />
-      <Tabs defaultValue="upcoming" className="w-[400px]">
-        <TabsList>
-          <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-          <TabsTrigger value="expired">Expired</TabsTrigger>
-        </TabsList>
-        <TabsContent value="upcoming">
-          <ScheduledMeetingList
-            meetingList={filterMeetingList("upcoming") as Meeting[]}
-          />
-        </TabsContent>
-        <TabsContent value="expired">
-          <ScheduledMeetingList meetingList={filterMeetingList("expired")} />
-        </TabsContent>
-      </Tabs>
+    <div className="p-4 mt-4">
+      <div className="bg-slate-50 p-4">
+        <h2 className="text-3xl text-primary font-bold mb-12">
+          Scheduled Meetings
+        </h2>
+        <Tabs defaultValue="upcoming" className="w-full">
+          <TabsList>
+            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+            <TabsTrigger value="expired">Expired</TabsTrigger>
+          </TabsList>
+          <TabsContent value="upcoming">
+            <ScheduledMeetingList
+              meetingList={filterMeetingList("upcoming") as Meeting[]}
+            />
+          </TabsContent>
+          <TabsContent value="expired">
+            <ScheduledMeetingList meetingList={filterMeetingList("expired")} />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

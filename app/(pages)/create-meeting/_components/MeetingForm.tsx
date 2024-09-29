@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import LocationOption from "@/app/_utils/LocationOption";
 import ThemeOptions from "@/app/_utils/ThemeOptions";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { app } from "@/config/FirebaseConfig";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { toast } from "sonner";
@@ -33,41 +33,53 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface MeetingFormProps {
-  setFormValue: (value: FormValues) => void;
+interface Event {
+  id?: string;
+  eventName: string;
+  duration: number;
+  locationType: string;
+  locationUrl: string;
+  themeColor: string;
 }
 
-const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue }) => {
+interface MeetingFormProps {
+  setFormValue: (value: FormValues) => void;
+  event?: Event;
+}
+
+const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue, event }) => {
   const { user } = useKindeBrowserClient();
   const db = getFirestore(app);
   const router = useRouter();
-
-  const [locationType, setLocationType] = useState<string>("");
+  const [locationType, setLocationType] = useState<string>(
+    event?.locationType || ""
+  );
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
+    defaultValues: event || {},
   });
 
   const onCreateClick: SubmitHandler<FormValues> = async (data) => {
-    const id = Date.now().toString();
+    const id = event?.id || Date.now().toString();
     await setDoc(doc(db, "MeetingEvent", id), {
       ...data,
       id: id,
       businessId: doc(db, "Business", user?.email as string),
       createdBy: user?.email,
     });
-    toast("New Meeting Event Created!");
+    toast(event ? "Meeting Event Updated!" : "New Meeting Event Created!");
     router.replace("/dashboard/meeting-type");
   };
 
   useEffect(() => {
-    // Watch form values and pass to parent
     const subscription = watch((data) => {
       setFormValue(data as FormValues);
     });
@@ -82,7 +94,9 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue }) => {
         </h2>
       </Link>
       <div className="mt-4">
-        <h2 className="font-bold text-2xl my-4">Create New Event</h2>
+        <h2 className="font-bold text-2xl my-4">
+          {event ? "Edit Event" : "Create New Event"}{" "}
+        </h2>
         <hr />
       </div>
 
@@ -92,6 +106,7 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue }) => {
           <Input
             placeholder="Name of your meeting event"
             {...register("eventName")}
+            defaultValue={watch("eventName")} // Use `watch` to display live input
           />
           {errors.eventName && (
             <p className="text-red-500">{errors.eventName.message}</p>
@@ -101,7 +116,7 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue }) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="max-w-40">
-                {watch("duration", 30)} Min
+                {watch("duration", event?.duration || 30)} Min{" "}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -149,7 +164,11 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue }) => {
           {locationType && (
             <>
               <h2 className="font-bold">Add {locationType} Url *</h2>
-              <Input placeholder="Add Url" {...register("locationUrl")} />
+              <Input
+                placeholder="Add Url"
+                {...register("locationUrl")}
+                defaultValue={watch("locationUrl", event?.locationUrl)} // Set default value if editing
+              />
               {errors.locationUrl && (
                 <p className="text-red-500">{errors.locationUrl.message}</p>
               )}
@@ -174,17 +193,8 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue }) => {
           )}
         </div>
 
-        <Button
-          className="w-full mt-9"
-          disabled={
-            !watch("eventName") ||
-            !watch("duration") ||
-            !watch("locationType") ||
-            !watch("locationUrl")
-          }
-          type="submit"
-        >
-          Create
+        <Button className="w-full mt-9" disabled={!isValid} type="submit">
+          {event ? "Update" : "Create"}{" "}
         </Button>
       </form>
     </div>

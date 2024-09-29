@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { CalendarCheck, Clock, LoaderIcon, MapPin, Timer } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -105,6 +105,18 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
       toast("Enter valid email address");
       return;
     }
+    const combinedDateTimeString = `${format(date, "PPP")} ${selectedTime}`;
+    const combinedDate = parse(
+      combinedDateTimeString,
+      "MMMM do, yyyy hh:mm a",
+      new Date()
+    );
+    const unixTimestamp = Math.floor(combinedDate.getTime() / 1000);
+    // const now = format(new Date(), "t");
+    // console.log("unixTimestamp", unixTimestamp);
+    // console.log("TimeNow", new Date(unixTimestamp * 1000));
+    // console.log("now", now);
+
     const docId = Date.now().toString();
     setLoading(true);
     await setDoc(doc(db, "ScheduledMeetings", docId), {
@@ -113,12 +125,13 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
       selectedTime: selectedTime,
       selectedDate: date,
       formatedDate: format(date, "PPP"),
-      formatedTimeStamp: format(date, "t"),
+      formatedTimeStamp: unixTimestamp,
       duration: eventInfo?.duration,
       locationUrl: eventInfo?.locationUrl,
       eventId: eventInfo?.id,
       eventName: eventInfo?.eventName,
       locationType: eventInfo?.locationType,
+      color: eventInfo?.themeColor,
       id: docId,
       userName,
       userEmail,

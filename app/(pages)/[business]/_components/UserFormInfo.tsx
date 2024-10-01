@@ -14,9 +14,9 @@ const UserFormInfo: React.FC<UserFormInfoProps> = ({
 }) => {
   return (
     <div className="p-4 px-8 flex flex-col gap-3">
-      <h2 className="font-bold text-xl">Enter Details</h2>
+      <h2 className="font-bold text-xl">Provide Your Information</h2>
       <div>
-        <h2>Name *</h2>
+        <h2>Fullname *</h2>
         <Input
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
             setUserName(event.target.value)

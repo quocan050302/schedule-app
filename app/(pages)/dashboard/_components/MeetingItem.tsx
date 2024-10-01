@@ -1,6 +1,6 @@
 "use client";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { Presentation } from "lucide-react";
+import { Mail, Notebook, Presentation } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { app } from "@/config/FirebaseConfig";
 import {
@@ -22,6 +22,9 @@ interface Meeting {
   eventName?: string;
   color?: string;
   formatedTimeStamp?: string;
+  userName?: string;
+  userEmail?: string;
+  userNote?: string;
 }
 
 interface MeetingItemProps {
@@ -33,7 +36,8 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
   const { user } = useKindeBrowserClient();
   const [meetingList, setMeetingList] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [modal, setModal] = useState<boolean>(false);
+  const [selectedClient, setSelectedClient] = useState<Meeting | null>(null);
   useEffect(() => {
     if (user) {
       getScheduledMeetings();
@@ -122,6 +126,25 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
 
   const upcomingEvent = filterMeetingList("upcoming");
 
+  const handleViewProfileClick = (meeting: Meeting) => {
+    setSelectedClient(meeting);
+    setModal(true);
+    document.body.classList.add("overflow-hidden");
+  };
+
+  const closeModal = () => {
+    setModal(false);
+    setSelectedClient(null);
+    document.body.classList.remove("overflow-hidden");
+  };
+  const getInitials = (fullName: string) => {
+    const nameParts = fullName.trim().split(" ");
+    const initials = nameParts
+      .filter((part, index) => index === 0 || index === nameParts.length - 1)
+      .map((part) => part.charAt(0).toUpperCase())
+      .join("");
+    return initials;
+  }
   return (
     <div>
       {loading ? (
@@ -137,7 +160,7 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
                     style={{
                       backgroundColor: `${meeting?.color}33`,
                     }}
-                    className={`py-4 px-6 bg-[${meeting?.color}]/90 rounded-sm relative overflow-hidden mb-4`}
+                    className={`py-4 px-6 rounded-sm relative overflow-hidden mb-4`}
                   >
                     <div
                       style={{
@@ -164,6 +187,22 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
                         <Presentation />
                       </Link>
                     </div>
+                    <div
+                      onClick={() => handleViewProfileClick(meeting)}
+                      className="flex items-center gap-4 mt-2 cursor-pointer"
+                    >
+                      <span
+                        style={{
+                          background: meeting?.color,
+                        }}
+                        className="text-center w-10 h-10 flex items-center justify-center text-[18px] text-white rounded-full "
+                      >
+                        {getInitials(meeting?.userName as string)}
+                      </span>
+                      <span className="text-[16px] cursor-pointer text-blue-700 underline">
+                        View client profile
+                      </span>
+                    </div>
                   </li>
                 )
             )
@@ -173,6 +212,54 @@ const MeetingItem = ({ selectedDate }: MeetingItemProps) => {
             </div>
           )}
         </ul>
+      )}
+      {modal && selectedClient && (
+        <div>
+          <div className="fixed  top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white z-[101] p-6 rounded-lg shadow-lg max-w-md w-full">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Client Profile</h2>
+              <button
+                className="py-1 px-[10px] bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={closeModal}
+              >
+                X
+              </button>
+            </div>
+            <div className="text-center my-4">
+              <div
+                style={{
+                  background: selectedClient?.color,
+                }}
+                className="h-32 w-32 text-[32px] font-semibold flex items-center justify-center text-white bg-[#F9BE81] rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4"
+              >
+                {getInitials(selectedClient?.userName as string)}
+              </div>
+              <div className="py-2 flex flex-col">
+                <h3 className="font-bold text-2xl text-gray-800 text-center mb-2">
+                  {selectedClient?.userName}
+                </h3>
+                <div className="flex justify-start items-start flex-col gap-2 bg-[#eaeffb]/50 p-3 rounded-sm">
+                  <div className="text-[20px] pb-2 border-b border-b-gray-200 flex items-center justify-between w-full gap-2 font-medium text-gray-700 ">
+                    <span>Email</span>
+                    <span className="text-right">
+                      {selectedClient?.userEmail}
+                    </span>
+                  </div>
+                  <div className="text-[20px] flex items-center justify-between w-full gap-2 font-medium text-gray-700 ">
+                    <span>Note</span>
+                    <span className="text-right">
+                      {selectedClient?.userNote}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            onClick={closeModal}
+            className="fixed z-[100] inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          ></div>
+        </div>
       )}
     </div>
   );

@@ -106,7 +106,7 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue, event }) => {
           <Input
             placeholder="Name of your meeting event"
             {...register("eventName")}
-            defaultValue={watch("eventName")} // Use `watch` to display live input
+            defaultValue={watch("eventName")}
           />
           {errors.eventName && (
             <p className="text-red-500">{errors.eventName.message}</p>
@@ -193,7 +193,7 @@ const MeetingForm: React.FC<MeetingFormProps> = ({ setFormValue, event }) => {
           )}
         </div>
 
-        <Button className="w-full mt-9" disabled={!isValid} type="submit">
+        <Button className="w-full mt-9" type="submit">
           {event ? "Update" : "Create"}{" "}
         </Button>
       </form>

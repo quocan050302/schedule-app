@@ -74,3 +74,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+.fc-dayGridMonth-view .custom-day-in-month {
+  display: none;
+}
+
+.fc-dayGridMonth-view .fc-daygrid-day-top {
+  justify-content: center;
+  text-align: center;
+}
+.fc .fc-dayGridMonth-view .fc-daygrid-day-number {
+  margin-block: 4px;
+  border-radius: 100%;
+  /* padding: 4px 8px; */
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fc-dayGridMonth-view .fc-day-today .fc-daygrid-day-number {
+  background: #5684ae;
+
+  color: white;
+}
+
+.fc .fc-daygrid-event {
+  white-space: unset;
+}
+.fc .fc-daygrid-event-harness .fc-event-start {
+  margin: 0 !important;
+}

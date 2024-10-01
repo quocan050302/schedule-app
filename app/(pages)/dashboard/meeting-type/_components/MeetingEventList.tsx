@@ -24,6 +24,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import MeetingEvent from "@/app/_skeletons/MeetingEvent";
+import Link from "next/link";
 interface Event {
   id: string;
   eventName: string;
@@ -145,7 +146,7 @@ const MeetingEventList: React.FC<MeetingEventListProps> = ({ searchQuery }) => {
           </div>
         </div>
       ) : (
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEvents?.length > 0 ? (
             filteredEvents.map((event) => (
               <div
@@ -192,12 +193,18 @@ const MeetingEventList: React.FC<MeetingEventListProps> = ({ searchQuery }) => {
                   >
                     <Copy className="h-4 w-4" /> Copy Link
                   </h2>
-                  <Button
-                    variant="outline"
-                    className="rounded-full text-primary border-primary"
+                  <Link
+                    href={
+                      process.env.NEXT_PUBLIC_BASE_URL +
+                      "/" +
+                      businessInfo?.businessName +
+                      "/" +
+                      event.id
+                    }
+                    className="rounded-full block text-primary border-primary"
                   >
-                    Share
-                  </Button>
+                    <Button className="h-auto">Share</Button>
+                  </Link>
                 </div>
               </div>
             ))

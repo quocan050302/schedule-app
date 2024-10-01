@@ -10,7 +10,7 @@ function DashboardLayout({
 }>) {
   return (
     <div>
-      <div className="hidden md:block md:w-96 bg-slate-50 h-screen fixed">
+      <div className="hidden md:block md:w-96 bg-slate-50 h-screen fixed z-10">
         <SideNavBar />
       </div>
       <div className="md:ml-96">

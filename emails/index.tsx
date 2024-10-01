@@ -101,8 +101,7 @@ export const Email = ({
                     marginTop: -5,
                   }}
                 >
-                  *Please Join meeting on above details
-                  {meetingUrl}
+                  *Please Join meeting on above details: {meetingUrl}
                 </Text>
               </Column>
             </Row>

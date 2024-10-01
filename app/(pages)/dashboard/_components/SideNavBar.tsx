@@ -43,25 +43,28 @@ function SideNavBar() {
     return date < today;
   };
 
-  const [date, setDate] = useState<Date | undefined>(() => {
-    const storedDate = localStorage.getItem("selectedDate");
-    return storedDate ? new Date(storedDate) : new Date(); // Default to current date if not set
-  });
+  const [date, setDate] = useState<Date | undefined>();
 
-  const path = usePathname();
-  const [activePath, setActivePath] = useState(path);
+  //   const path = usePathname();
+  //   const [activePath, setActivePath] = useState(path);
 
   const formattedDate = date
     ? format(date, "eeee, d MMMM")
     : "No Date Selected";
 
-  useEffect(() => {
-    path && setActivePath(path);
-  }, [path]);
+  //   useEffect(() => {
+  //     path && setActivePath(path);
+  //   }, [path]);
 
-  // Save the selected date to localStorage whenever it changes
   useEffect(() => {
-    if (date) {
+    if (typeof window !== "undefined") {
+      const storedDate = localStorage.getItem("selectedDate");
+      setDate(storedDate ? new Date(storedDate) : new Date());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (date && typeof window !== "undefined") {
       localStorage.setItem("selectedDate", date.toISOString());
     }
   }, [date]);

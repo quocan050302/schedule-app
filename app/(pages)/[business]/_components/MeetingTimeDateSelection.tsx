@@ -50,7 +50,7 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
 }) => {
   const [date, setDate] = useState<Date>(new Date());
   const [timeSlots, setTimeSlots] = useState<string[] | undefined>();
-  const [enableTimeSlot, setEnabledTimeSlot] = useState<boolean>(true);
+  const [enableTimeSlot, setEnabledTimeSlot] = useState<boolean>(false);
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [userName, setUserName] = useState<string | undefined>();
   const [userEmail, setUserEmail] = useState<string | undefined>();
@@ -67,7 +67,6 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
       createTimeSlot(eventInfo.duration);
     }
   }, [eventInfo]);
-  console.log("businessInfo", businessInfo);
 
   const createTimeSlot = (interval: number) => {
     const startTime = 8 * 60;
@@ -77,7 +76,7 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
       const totalMinutes = startTime + i * interval;
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
-      const formattedHours = hours > 12 ? hours - 12 : hours; // Convert to 12-hour format
+      const formattedHours = hours > 12 ? hours - 12 : hours;
       const period = hours >= 12 ? "PM" : "AM";
       return `${String(formattedHours).padStart(2, "0")}:${String(
         minutes
@@ -87,10 +86,11 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
     console.log(slots);
     setTimeSlots(slots);
   };
-
   const handleDateChange = (date: Date) => {
     setDate(date);
+    console.log("date", date);
     const day = format(date, "EEEE");
+
     if (businessInfo?.daysAvailable?.[day]) {
       getPrevEventBooking(date);
       setEnabledTimeSlot(true);
@@ -98,6 +98,7 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
       setEnabledTimeSlot(false);
     }
   };
+  console.log("enableTimeSlot", enableTimeSlot);
 
   const handleScheduleEvent = async () => {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -176,6 +177,8 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
   };
 
   const getPrevEventBooking = async (date_: Date) => {
+    console.log("date_", date_);
+    console.log("eventInfo?.id", eventInfo?.id);
     const q = query(
       collection(db, "ScheduledMeetings"),
       where("selectedDate", "==", date_),
@@ -183,8 +186,12 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
     );
 
     const querySnapshot = await getDocs(q);
-    const bookings = querySnapshot.docs.map((doc) => doc.data());
-    setPrevBooking(bookings);
+    // const bookings = querySnapshot.docs.map((doc) => doc.data());
+    // setPrevBooking(bookings);
+    querySnapshot.forEach((doc) => {
+      console.log("--", doc.data());
+      setPrevBooking((prev) => [...prev, doc.data()]);
+    });
   };
 
   return (
@@ -192,7 +199,15 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
       className="p-5 py-10 shadow-lg m-5 border-t-8 mx-10 md:mx-26 lg:mx-56 my-10"
       style={{ borderTopColor: eventInfo?.themeColor }}
     >
-      <Image src="/logo.svg" alt="logo" width={150} height={150} />
+      {" "}
+      <div>
+        <Link
+          href="/dashboard"
+          className="text-4xl no-underline text-blue-700 font-sans font-bold max-[430px]:text-[20px]"
+        >
+          Byte<span className="text-green-800">Webster</span>
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 mt-5">
         <div className="p-4 border-r">
           <h2>{businessInfo?.businessName}</h2>
@@ -233,6 +248,7 @@ const MeetingTimeDateSelection: React.FC<MeetingTimeDateSelectionProps> = ({
             timeSlots={timeSlots as string[]}
             selectedTime={selectedTime}
             prevBooking={prevBooking}
+            businessInfo={businessInfo}
           />
         ) : (
           <UserFormInfo

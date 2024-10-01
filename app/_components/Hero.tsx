@@ -29,13 +29,13 @@ function Hero() {
               Sign up with Google
             </Button>
           </LoginLink>
-          <LoginLink>
+          {/* <LoginLink>
             {" "}
             <Button className="p-7 flex gap-4 bg-[#0269fe] hover:bg-[#0269fe]/80">
               <Image src="/facebook.png" alt="google" width={40} height={40} />
               Sign up with Facebook
             </Button>
-          </LoginLink>
+          </LoginLink> */}
         </div>
       </div>
 
@@ -275,7 +275,7 @@ function Hero() {
               height="90"
               filterUnits="userSpaceOnUse"
             >
-              <feOffset dy="5" input="SourceAlpha" />
+              <feOffset dy="5" in="SourceAlpha" />
               <feGaussianBlur stdDeviation="3.5" result="ae" />
               <feFlood flood-color="#a4a4a4" flood-opacity="0.216" />
               <feComposite operator="in" in2="ae" />
@@ -289,7 +289,7 @@ function Hero() {
               height="101"
               filterUnits="userSpaceOnUse"
             >
-              <feOffset dy="6" input="SourceAlpha" />
+              <feOffset dy="6" in="SourceAlpha" />
               <feGaussianBlur stdDeviation="4" result="ag" />
               <feFlood flood-color="#a4a4a4" flood-opacity="0.216" />
               <feComposite operator="in" in2="ag" />
@@ -303,7 +303,7 @@ function Hero() {
               height="71.9"
               filterUnits="userSpaceOnUse"
             >
-              <feOffset dy="4" input="SourceAlpha" />
+              <feOffset dy="4" in="SourceAlpha" />
               <feGaussianBlur stdDeviation="3" result="ai" />
               <feFlood flood-color="#a4a4a4" flood-opacity="0.216" />
               <feComposite operator="in" in2="ai" />
@@ -317,7 +317,7 @@ function Hero() {
               height="80.37"
               filterUnits="userSpaceOnUse"
             >
-              <feOffset dy="4" input="SourceAlpha" />
+              <feOffset dy="4" in="SourceAlpha" />
               <feGaussianBlur stdDeviation="3" result="ak" />
               <feFlood flood-color="#a4a4a4" flood-opacity="0.216" />
               <feComposite operator="in" in2="ak" />
@@ -331,7 +331,7 @@ function Hero() {
               height="80.37"
               filterUnits="userSpaceOnUse"
             >
-              <feOffset dy="4" input="SourceAlpha" />
+              <feOffset dy="4" in="SourceAlpha" />
               <feGaussianBlur stdDeviation="3" result="am" />
               <feFlood flood-color="#a4a4a4" flood-opacity="0.216" />
               <feComposite operator="in" in2="am" />
@@ -345,7 +345,7 @@ function Hero() {
               height="72"
               filterUnits="userSpaceOnUse"
             >
-              <feOffset dy="4" input="SourceAlpha" />
+              <feOffset dy="4" in="SourceAlpha" />
               <feGaussianBlur stdDeviation="3" result="ao" />
               <feFlood flood-color="#a4a4a4" flood-opacity="0.216" />
               <feComposite operator="in" in2="ao" />

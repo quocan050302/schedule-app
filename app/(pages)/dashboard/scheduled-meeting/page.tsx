@@ -66,9 +66,7 @@ function ScheduledMeeting() {
   return (
     <div className="p-4 mt-4">
       <div className="bg-slate-50 p-4">
-        <h2 className="text-3xl text-primary font-bold mb-12">
-          Scheduled Meetings
-        </h2>
+        <h2 className="text-3xl font-bold mb-12">Scheduled Meetings</h2>
         <Tabs defaultValue="upcoming" className="w-full">
           <TabsList>
             <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
@@ -76,11 +74,13 @@ function ScheduledMeeting() {
           </TabsList>
           <TabsContent value="upcoming">
             <ScheduledMeetingList
-              meetingList={filterMeetingList("upcoming") as Meeting[]}
+              meetingList={filterMeetingList("upcoming") as any}
             />
           </TabsContent>
           <TabsContent value="expired">
-            <ScheduledMeetingList meetingList={filterMeetingList("expired")} />
+            <ScheduledMeetingList
+              meetingList={filterMeetingList("expired") as any}
+            />
           </TabsContent>
         </Tabs>
       </div>

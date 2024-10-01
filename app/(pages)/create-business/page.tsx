@@ -10,12 +10,44 @@ import { useRouter } from "next/navigation";
 import React, { SetStateAction, useState } from "react";
 import { toast } from "sonner";
 
+type Day =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday";
+
+const DaysList: { day: Day }[] = [
+  { day: "Sunday" },
+  { day: "Monday" },
+  { day: "Tuesday" },
+  { day: "Wednesday" },
+  { day: "Thursday" },
+  { day: "Friday" },
+  { day: "Saturday" },
+];
+type DaysAvailable = {
+  [key in Day]: boolean;
+};
+
 function CreateBusiness() {
+  const initialDaysAvailable = {
+    Sunday: true,
+    Monday: true,
+    Tuesday: true,
+    Wednesday: true,
+    Thursday: true,
+    Friday: true,
+    Saturday: true,
+  };
   const [businessName, setBusinessName] = useState<string>();
   const db = getFirestore(app);
   const { user } = useKindeBrowserClient();
   const router = useRouter();
-  console.log(user);
+  const [daysAvailable, setDaysAvailable] =
+    useState<DaysAvailable>(initialDaysAvailable);
   const onCreateBusiness = async () => {
     if (!user?.email || !businessName) {
       console.log("Missing user email or business name");
@@ -24,9 +56,10 @@ function CreateBusiness() {
 
     try {
       await setDoc(doc(db, "Business", user.email), {
-        businessName: businessName.replace(" ", "_"),
+        businessName: businessName.trim().replace(/ /g, "_"),
         email: user.email,
         userName: `${user.given_name} ${user.family_name}`,
+        daysAvailable: daysAvailable,
       });
       console.log("Document Saved");
       toast("New Business Created!");
@@ -51,7 +84,9 @@ function CreateBusiness() {
           You can always change this later from settings
         </p>
         <div className="w-full">
-          <label className="text-slate-400">Team Name</label>
+          <label className="text-slate-400">
+            Team Name ( Do not use special characters)
+          </label>
           <Input
             placeholder="Ex. TubeGuruji"
             className="mt-2"

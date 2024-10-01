@@ -40,13 +40,13 @@ type DaysAvailable = {
 
 function Availability() {
   const initialDaysAvailable = {
-    Sunday: false,
-    Monday: false,
-    Tuesday: false,
-    Wednesday: false,
-    Thursday: false,
-    Friday: false,
-    Saturday: false,
+    Sunday: true,
+    Monday: true,
+    Tuesday: true,
+    Wednesday: true,
+    Thursday: true,
+    Friday: true,
+    Saturday: true,
   };
 
   const [daysAvailable, setDaysAvailable] =
@@ -64,11 +64,10 @@ function Availability() {
     const docRef = doc(db, "Business", user?.email as string);
     const docSnap = await getDoc(docRef);
     const result = docSnap.data();
-    console.log(result);
     if (result) {
       setDaysAvailable(result?.daysAvailable || initialDaysAvailable);
-      setStartTime(result?.startTime);
-      setEndTime(result?.endTime);
+      // setStartTime(result?.startTime);
+      // setEndTime(result?.endTime);
     }
   };
 
@@ -80,37 +79,37 @@ function Availability() {
   };
 
   const handleSave = async () => {
-    if (!daysAvailable || typeof daysAvailable !== "object") {
-      toast.error("Invalid days available data.");
-      return;
-    }
+    // if (!daysAvailable || typeof daysAvailable !== "object") {
+    //   toast.error("Invalid days available data.");
+    //   return;
+    // }
 
-    if (!Object.values(daysAvailable).some(Boolean)) {
-      toast.error("Please select at least one available day.");
-      return;
-    }
+    // if (!Object.values(daysAvailable).some(Boolean)) {
+    //   toast.error("Please select at least one available day.");
+    //   return;
+    // }
 
-    if (!startTime) {
-      toast.error("Please select a start time.");
-      return;
-    }
+    // if (!startTime) {
+    //   toast.error("Please select a start time.");
+    //   return;
+    // }
 
-    if (!endTime) {
-      toast.error("Please select an end time.");
-      return;
-    }
+    // if (!endTime) {
+    //   toast.error("Please select an end time.");
+    //   return;
+    // }
 
-    if (startTime >= endTime) {
-      toast.error("Start time must be before end time.");
-      return;
-    }
+    // if (startTime >= endTime) {
+    //   toast.error("Start time must be before end time.");
+    //   return;
+    // }
 
     const docRef = doc(db, "Business", user?.email as string);
     try {
       await updateDoc(docRef, {
         daysAvailable,
-        startTime,
-        endTime,
+        // startTime,
+        // endTime,
       });
       toast("Change Updated!");
     } catch (error) {
@@ -121,7 +120,7 @@ function Availability() {
 
   return (
     <div className="p-10">
-      <h2 className="font-bold text-2xl">Availability</h2>
+      <h2 className="font-bold text-3xl">Availability</h2>
       <hr className="my-7" />
       <div>
         <h2 className="font-bold">Availability Days</h2>
@@ -147,7 +146,7 @@ function Availability() {
             ))}
         </div>
       </div>
-      <div>
+      {/* <div>
         <h2 className="font-bold mt-10">Availability Time</h2>
         <div className="flex gap-10">
           <div className="mt-3">
@@ -167,7 +166,7 @@ function Availability() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
       <Button className="mt-10" onClick={handleSave}>
         Save
       </Button>

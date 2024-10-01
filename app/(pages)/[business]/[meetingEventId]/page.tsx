@@ -63,6 +63,7 @@ const SharedMeetingEvent: React.FC<SharedMeetingEventProps> = ({ params }) => {
       setLoading(false);
     }
   };
+  console.log("businessInfo", businessInfo);
 
   return (
     <div>
